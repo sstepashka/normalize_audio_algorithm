@@ -29,8 +29,18 @@ class Normalize(object):
 
         self.av = 0.0
         self.n = 1.0
-
+    
     def _calc_mean(self, chunk):
+        """
+            This formula cal help avoid broblem with variable overflow
+            (nx + m) can be very very large number.
+            But after decomposite this work greatly
+            
+             nx + m         n         m
+            --------  =  ------- + -------
+              n + 1       n + 1     n + 1
+            
+        """
         for sample in chunk:
             self.av = (self.n - 1) / self.n * self.av + sample / self.n
             self.n += 1.0
