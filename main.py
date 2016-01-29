@@ -28,7 +28,7 @@ class Normalize(object):
         # self.values_n = 0
 
         self.av = 0.0
-        self.n = 1.0
+        self.n = 0.0
     
     def _calc_mean(self, chunk):
         """
@@ -36,14 +36,22 @@ class Normalize(object):
             (nx + m) can be very very large number.
             But after decomposite this work greatly
             
-             nx + m         n         m
-            --------  =  ------- + -------
-              n + 1       n + 1     n + 1
+             nx + m           n         m
+            --------  =  x ------- + -------
+              n + 1         n + 1     n + 1
             
         """
-        for sample in chunk:
-            self.av = (self.n - 1) / self.n * self.av + sample / self.n
-            self.n += 1.0
+
+        # for sample in chunk:
+        #     self.n += 1.0
+        #     self.av = (self.n - 1) / self.n * self.av + sample / self.n
+
+        #   nx + sum(m)            n            sum(m)
+        #  -------------- = x ------------ + ------------
+        #    n + len(m)        n + len(m)      n + len(m)
+        
+        self.n += float(len(chunk))
+        self.av = (self.n - len(chunk)) / self.n * self.av + sum(chunk) / self.n
 
         return self.av
 
@@ -98,6 +106,14 @@ class Normalize(object):
         return (maximum, minimum)
 
 def main():
+
+    # normalize = Normalize()
+
+    # print normalize._calc_mean([1, 2, 3, 4]) # 2.5
+    # print normalize._calc_mean([5, 6, 7, 8]) # 4.5
+
+    # return 
+
     file_name = '1453874060289.wav'
 
     # data = numpy.memmap(file_name, dtype='h', mode='r')
